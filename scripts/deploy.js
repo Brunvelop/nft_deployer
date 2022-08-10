@@ -1,7 +1,8 @@
 const hre = require("hardhat");
 
+
 async function main() {
-  const PixVersesNFT = await hre.ethers.getContractFactory("NFT");
+  const PixVersesNFT = await hre.ethers.getContractFactory("PixVerses");
   const pixVersesNFT = await PixVersesNFT.deploy();
 
   await pixVersesNFT.deployed();
@@ -17,3 +18,4 @@ main()
     console.error(error);
     process.exit(1);
 });
+
