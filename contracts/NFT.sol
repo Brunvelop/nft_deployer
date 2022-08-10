@@ -23,7 +23,32 @@ contract PixVerses is ERC721, Ownable {
         // set witdraw wallet address
     }
 
-    function safeMint(address to, uint256 tokenId) public onlyOwner {
-        _safeMint(to, tokenId);
+    function setIsPublicMintEnabled(bool _isPublicMitEnabled) external onlyOwner {
+        isPublicMitEnabled = _isPublicMitEnabled;
+    }
+
+    function setBaseTokenUri(string calldata _baseTokenUri) external onlyOwner {
+        baseTokenUri = _baseTokenUri;
+    }
+
+    function tokenURI(uint256 _tokenId) public view override returns (string memory) {
+        require(_exists(_tokenId), 'Token does not exist!');
+        return string(abi.encodePacked(baseTokenUri, Strings.toString(_tokenId),'.json'));
+    }
+
+    function withdraw() external onlyOwner {
+        (bool success, ) = withdrawWallet.call{ value: address(this).balance }('');
+        require(success,'Withdraw failed');
+    }
+
+    function mint() public payable {
+        require(isPublicMitEnabled, 'Minting is not enabled');
+        require(totalSupply + 1 <= maxSupply, 'Sold out.');
+        require(walletMints[msg.sender] == 0, 'Exceed max wallet');
+
+        uint256 newTokenId = totalSupply + 1;
+        totalSupply++;
+        _safeMint(msg.sender, newTokenId);
+
     }
 }
