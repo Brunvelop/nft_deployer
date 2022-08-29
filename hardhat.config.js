@@ -12,6 +12,11 @@ module.exports = {
       url: process.env.RINKEBY_RPC_URL,
       accounts: [process.env.DEPLOYER_PRIVATE_KEY]
     },
+    goerli: {
+      url: process.env.GOERLI_RPC_URL,
+      accounts: [process.env.DEPLOYER_PRIVATE_KEY]
+
+    }
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY
