@@ -38,7 +38,7 @@ contract Pixt is ERC721, Ownable {
     }
 
     function totalSupply() external  view returns (uint256) {
-      return _tokenIdCounter.current();
+      return MAX_SUPPLY;
     }
 
     function withdraw() external onlyOwner {
