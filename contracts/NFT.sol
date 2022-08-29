@@ -3,23 +3,21 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract PixVerses is ERC721, Ownable {
+    using Counters for Counters.Counter;
 
-    uint256 public mintPrice;
-    uint256 public totalSupply;
-    uint256 public maxSupply;
-    uint256 public maxPerWallet;
+    Counters.Counter private _tokenIdCounter;
+
+    uint256 public MAX_SUPPLY;
     bool public isPublicMitEnabled;
     string internal baseTokenUri;
     address payable public withdrawWallet;
-    mapping(address => uint256) public walletMints;
 
     constructor() payable ERC721("PixVerses", "PXV") {
-        mintPrice = 0 ether;
-        totalSupply = 0;
-        maxSupply = 333;
-        maxPerWallet = 1;
+        MAX_SUPPLY = 333;
+        MAX_PER_WALLET = 1;
         // set witdraw wallet address
     }
 
@@ -41,14 +39,13 @@ contract PixVerses is ERC721, Ownable {
         require(success,'Withdraw failed');
     }
 
-    function mint() public payable {
+    function freeMint() public payable {
         require(isPublicMitEnabled, 'Minting is not enabled');
-        require(totalSupply + 1 <= maxSupply, 'Sold out.');
-        require(walletMints[msg.sender] == 0, 'Exceed max wallet');
+        require(balanceOf(msg.sender) < MAX_PER_WALLET, "Max Mint per wallet reached");
+        require(_tokenIdCounter.current() <= MAX_SUPPLY , "I'm sorry we reached the cap");
 
-        uint256 newTokenId = totalSupply + 1;
-        totalSupply++;
-        _safeMint(msg.sender, newTokenId);
-
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(msg.sender, tokenId);
     }
 }
