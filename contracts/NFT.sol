@@ -2,10 +2,11 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract PixVerses is ERC721, Ownable {
+contract Pixt is ERC721, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -16,7 +17,7 @@ contract PixVerses is ERC721, Ownable {
     string internal baseTokenUri;
     address payable public withdrawWallet;
 
-    constructor() payable ERC721("PixVerses2", "PXV2") {
+    constructor() payable ERC721("Pixt", "PXT") {
         MAX_SUPPLY = 333;
         MAX_MINT_PER_WALLET = 3;
         _tokenIdCounter.increment();
@@ -34,6 +35,10 @@ contract PixVerses is ERC721, Ownable {
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
         require(_exists(_tokenId), 'Token does not exist!');
         return string(abi.encodePacked(baseTokenUri, Strings.toString(_tokenId),'.json'));
+    }
+
+    function totalSupply() external  view returns (uint256) {
+      return _tokenIdCounter.current();
     }
 
     function withdraw() external onlyOwner {
