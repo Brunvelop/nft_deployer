@@ -11,14 +11,15 @@ contract PixVerses is ERC721, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     uint256 public MAX_SUPPLY;
-    uint256 public MAX_PER_WALLET;
+    uint256 public MAX_MINT_PER_WALLET;
     bool public isPublicMitEnabled;
     string internal baseTokenUri;
     address payable public withdrawWallet;
 
-    constructor() payable ERC721("PixVerses", "PXV") {
+    constructor() payable ERC721("PixVerses2", "PXV2") {
         MAX_SUPPLY = 333;
-        MAX_PER_WALLET = 1;
+        MAX_MINT_PER_WALLET = 3;
+        _tokenIdCounter.increment();
         // set witdraw wallet address
     }
 
@@ -42,7 +43,7 @@ contract PixVerses is ERC721, Ownable {
 
     function freeMint() public payable {
         require(isPublicMitEnabled, 'Minting is not enabled');
-        require(balanceOf(msg.sender) < MAX_PER_WALLET, "Max Mint per wallet reached");
+        require(balanceOf(msg.sender) < MAX_MINT_PER_WALLET, "Max Mint per wallet reached");
         require(_tokenIdCounter.current() <= MAX_SUPPLY , "I'm sorry we reached the cap");
 
         uint256 tokenId = _tokenIdCounter.current();
