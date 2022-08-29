@@ -11,6 +11,7 @@ contract PixVerses is ERC721, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     uint256 public MAX_SUPPLY;
+    uint256 public MAX_PER_WALLET;
     bool public isPublicMitEnabled;
     string internal baseTokenUri;
     address payable public withdrawWallet;
