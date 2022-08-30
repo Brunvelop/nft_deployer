@@ -15,13 +15,11 @@ contract Pixt is ERC721, Ownable {
     uint256 public MAX_MINT_PER_WALLET;
     bool public isPublicMitEnabled;
     string internal baseTokenUri;
-    address payable public withdrawWallet;
 
     constructor() payable ERC721("Pixt", "PXT") {
         MAX_SUPPLY = 333;
         MAX_MINT_PER_WALLET = 3;
         _tokenIdCounter.increment();
-        // set witdraw wallet address
     }
 
     function setIsPublicMintEnabled(bool _isPublicMitEnabled) external onlyOwner {
@@ -41,12 +39,8 @@ contract Pixt is ERC721, Ownable {
       return MAX_SUPPLY;
     }
 
-    function withdraw() external onlyOwner {
-        (bool success, ) = withdrawWallet.call{ value: address(this).balance }('');
-        require(success,'Withdraw failed');
-    }
-
     function freeMint() public payable {
+        require(msg.value == 0.1);
         require(isPublicMitEnabled, 'Minting is not enabled');
         require(balanceOf(msg.sender) < MAX_MINT_PER_WALLET, "Max Mint per wallet reached");
         require(_tokenIdCounter.current() <= MAX_SUPPLY , "I'm sorry we reached the cap");
